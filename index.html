@@ -99,23 +99,19 @@ button {
 const notes = document.querySelectorAll('.note');
 
 function layoutNotes() {
-  const gapY = 90;
-
-  let aIndex = 0;
-  let bIndex = 0;
+  const leftArea = 300;   // Aの横幅
+  const rightStart = 500; // Bの開始位置
 
   notes.forEach(note => {
 
     if (note.classList.contains('A')) {
-      note.style.left = 50 + Math.random() * 40 + 'px';
-      note.style.top = aIndex * gapY + Math.random() * 20 + 'px';
-      aIndex++;
+      note.style.left = Math.random() * leftArea + 'px';
+      note.style.top = Math.random() * 600 + 50 + 'px';
     }
 
     if (note.classList.contains('B')) {
-      note.style.left = 350 + Math.random() * 40 + 'px';
-      note.style.top = bIndex * gapY + Math.random() * 20 + 'px';
-      bIndex++;
+      note.style.left = rightStart + Math.random() * leftArea + 'px';
+      note.style.top = Math.random() * 600 + 50 + 'px';
     }
 
   });
