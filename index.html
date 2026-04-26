@@ -11,50 +11,54 @@ body {
   font-family: sans-serif;
   background: #f5f5f5;
 
-  width: 2000px;
-  height: 1200px;
+  width: 1600px;
+  height: 1000px;
 }
 
+/* スマホ */
 @media (max-width: 600px) {
   body {
-    width: 1600px;
+    width: 1200px;
     height: 900px;
   }
 }
 
 .note {
   position: absolute;
-  padding: 18px 20px;
+  padding: 14px 18px;
   border-radius: 12px;
   font-size: 18px;
   touch-action: none;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 
-  min-width: 140px;
-  max-width: 220px;
+  min-width: 160px;   /* ← 横長にする */
+  max-width: 260px;
 
   white-space: normal;
-  overflow-wrap: break-word;   /* ★はみ出し防止 */
-  word-break: normal;          /* ★日本語を自然に折る */
-  box-sizing: border-box;      /* ★padding込みで計算 */
-  line-height: 1.4;            /* ★読みやすさ */
+  overflow-wrap: break-word;
+  word-break: normal;
+  box-sizing: border-box;
+  line-height: 1.4;
 }
 
 @media (max-width: 600px) {
   .note {
     font-size: 20px;
+    min-width: 180px;
   }
 }
 
 .A { background: #fffa8b; }
 .B { background: #a0e7ff; }
 
+/* ボタン改善 */
 button {
   position: fixed;
-  bottom: 10px;
+  top: 10px;     /* ← 上に移動 */
   left: 10px;
-  padding: 10px 15px;
+  padding: 12px 16px;
   font-size: 16px;
+  z-index: 1000;
 }
 </style>
 </head>
@@ -63,7 +67,7 @@ button {
 
 <button onclick="resetNotes()">reset</button>
 
-<!-- A（前半） -->
+<!-- A -->
 <div class="note A">こどもをそだてるのは</div>
 <div class="note A">あさはやくおきるのは</div>
 <div class="note A">だいがくにはいるのは</div>
@@ -77,7 +81,7 @@ button {
 <div class="note A">へたですから、うたうのが</div>
 <div class="note A">りょうりをつくるのが</div>
 
-<!-- B（後半） -->
+<!-- B -->
 <div class="note B">たいへんです</div>
 <div class="note B">きもちがいいです</div>
 <div class="note B">むずかしいです</div>
@@ -94,31 +98,38 @@ button {
 <script>
 const notes = document.querySelectorAll('.note');
 
-/* ★整列＋少しランダム */
-function randomizePosition(note, index) {
-  const cols = 4;        // 列数（スマホでも見やすい）
-  const gapX = 180;      // 横間隔
-  const gapY = 120;      // 縦間隔
+function layoutNotes() {
+  const gapY = 90;
 
-  const col = index % cols;
-  const row = Math.floor(index / cols);
+  let aIndex = 0;
+  let bIndex = 0;
 
-  const jitterX = Math.random() * 30;
-  const jitterY = Math.random() * 30;
+  notes.forEach(note => {
 
-  note.style.left = col * gapX + jitterX + 'px';
-  note.style.top = row * gapY + jitterY + 'px';
+    if (note.classList.contains('A')) {
+      note.style.left = 50 + Math.random() * 40 + 'px';
+      note.style.top = aIndex * gapY + Math.random() * 20 + 'px';
+      aIndex++;
+    }
+
+    if (note.classList.contains('B')) {
+      note.style.left = 350 + Math.random() * 40 + 'px';
+      note.style.top = bIndex * gapY + Math.random() * 20 + 'px';
+      bIndex++;
+    }
+
+  });
 }
 
 // 初期配置
-notes.forEach((note, index) => randomizePosition(note, index));
+layoutNotes();
 
 // リセット
 function resetNotes() {
-  notes.forEach((note, index) => randomizePosition(note, index));
+  layoutNotes();
 }
 
-// ドラッグ処理（そのまま）
+// ドラッグ
 notes.forEach(note => {
 
   let offsetX, offsetY;
