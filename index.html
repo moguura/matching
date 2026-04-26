@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <title>付箋マッチング</title>
 
 <style>
@@ -13,6 +13,13 @@ body {
 
   width: 2000px;
   height: 1200px;
+}
+  
+@media (max-width: 600px) {
+  body {
+    width: 1600px;
+    height: 900px;
+  }
 }
   
 .note {
@@ -26,6 +33,12 @@ body {
   max-width: 220px;
   white-space: normal;
   word-break: keep-all;
+}
+
+@media (max-width: 600px) {
+  .note {
+    font-size: 20px;
+  }
 }
 
 .A { background: #fffa8b; }
