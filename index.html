@@ -14,14 +14,14 @@ body {
   width: 2000px;
   height: 1200px;
 }
-  
+
 @media (max-width: 600px) {
   body {
     width: 1600px;
     height: 900px;
   }
 }
-  
+
 .note {
   position: absolute;
   padding: 18px 20px;
@@ -29,10 +29,15 @@ body {
   font-size: 18px;
   touch-action: none;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+
   min-width: 140px;
   max-width: 220px;
+
   white-space: normal;
-  word-break: keep-all;
+  overflow-wrap: break-word;   /* ★はみ出し防止 */
+  word-break: normal;          /* ★日本語を自然に折る */
+  box-sizing: border-box;      /* ★padding込みで計算 */
+  line-height: 1.4;            /* ★読みやすさ */
 }
 
 @media (max-width: 600px) {
@@ -61,7 +66,7 @@ button {
 <!-- A（前半） -->
 <div class="note A">こどもをそだてるのは</div>
 <div class="note A">あさはやくおきるのは</div>
-<div class="note A">だいがくにはいるのは</div> <!-- ★修正ここ -->
+<div class="note A">だいがくにはいるのは</div>
 <div class="note A">サッカーをするのは</div>
 <div class="note A">たくさんおさけをのむのは</div>
 <div class="note A">うそをつくのは</div>
@@ -89,19 +94,31 @@ button {
 <script>
 const notes = document.querySelectorAll('.note');
 
-function randomizePosition(note) {
-  note.style.left = Math.random() * (window.innerWidth - 180) + 'px';
-  note.style.top = Math.random() * (window.innerHeight - 180) + 'px';
+/* ★整列＋少しランダム */
+function randomizePosition(note, index) {
+  const cols = 4;        // 列数（スマホでも見やすい）
+  const gapX = 180;      // 横間隔
+  const gapY = 120;      // 縦間隔
+
+  const col = index % cols;
+  const row = Math.floor(index / cols);
+
+  const jitterX = Math.random() * 30;
+  const jitterY = Math.random() * 30;
+
+  note.style.left = col * gapX + jitterX + 'px';
+  note.style.top = row * gapY + jitterY + 'px';
 }
 
-// 初期シャッフル
-notes.forEach(note => randomizePosition(note));
+// 初期配置
+notes.forEach((note, index) => randomizePosition(note, index));
 
 // リセット
 function resetNotes() {
-  notes.forEach(note => randomizePosition(note));
+  notes.forEach((note, index) => randomizePosition(note, index));
 }
 
+// ドラッグ処理（そのまま）
 notes.forEach(note => {
 
   let offsetX, offsetY;
@@ -117,7 +134,6 @@ notes.forEach(note => {
     note.style.top = (y - offsetY) + 'px';
   }
 
-  // マウス
   note.addEventListener('mousedown', e => {
     startMove(e.pageX, e.pageY);
 
@@ -132,7 +148,6 @@ notes.forEach(note => {
     }, { once: true });
   });
 
-  // タッチ
   note.addEventListener('touchstart', e => {
     const t = e.touches[0];
     startMove(t.pageX, t.pageY);
