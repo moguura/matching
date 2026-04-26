@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>付箋マッチング</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: #f5f5f5;
+}
+
+.note {
+  position: absolute;
+  padding: 18px 20px;
+  border-radius: 12px;
+  font-size: 18px;
+  touch-action: none;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  max-width: 200px;
+}
+
+.A { background: #fffa8b; }
+.B { background: #a0e7ff; }
+
+button {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  padding: 10px 15px;
+  font-size: 16px;
+}
+</style>
+</head>
+
+<body>
+
+<button onclick="resetNotes()">リセット</button>
+
+<!-- A（前半） -->
+<div class="note A">こどもをそだてるのは</div>
+<div class="note A">あさはやくおきるのは</div>
+<div class="note A">だいがくにはいるのは</div> <!-- ★修正ここ -->
+<div class="note A">サッカーをするのは</div>
+<div class="note A">たくさんおさけをのむのは</div>
+<div class="note A">うそをつくのは</div>
+<div class="note A">チーターははしるのが</div>
+<div class="note A">おばあさんはあるくのが</div>
+<div class="note A">りょこうにいくのが</div>
+<div class="note A">コックはりょうりをつくるのが</div>
+<div class="note A">へたですから、うたうのが</div>
+<div class="note A">りょうりをつくるのが</div>
+
+<!-- B（後半） -->
+<div class="note B">たいへんです</div>
+<div class="note B">きもちがいいです</div>
+<div class="note B">むずかしいです</div>
+<div class="note B">たのしいです</div>
+<div class="note B">からだにわるいです</div>
+<div class="note B">きもちがわるいです</div>
+<div class="note B">はやいです</div>
+<div class="note B">おそいです</div>
+<div class="note B">すきです</div>
+<div class="note B">じょうずです</div>
+<div class="note B">きらいです</div>
+<div class="note B">へたです</div>
+
+<script>
+const notes = document.querySelectorAll('.note');
+
+function randomizePosition(note) {
+  note.style.left = Math.random() * (window.innerWidth - 180) + 'px';
+  note.style.top = Math.random() * (window.innerHeight - 180) + 'px';
+}
+
+// 初期シャッフル
+notes.forEach(note => randomizePosition(note));
+
+// リセット
+function resetNotes() {
+  notes.forEach(note => randomizePosition(note));
+}
+
+notes.forEach(note => {
+
+  let offsetX, offsetY;
+
+  function startMove(x, y) {
+    const rect = note.getBoundingClientRect();
+    offsetX = x - rect.left;
+    offsetY = y - rect.top;
+  }
+
+  function moveAt(x, y) {
+    note.style.left = (x - offsetX) + 'px';
+    note.style.top = (y - offsetY) + 'px';
+  }
+
+  // マウス
+  note.addEventListener('mousedown', e => {
+    startMove(e.pageX, e.pageY);
+
+    function onMove(e) {
+      moveAt(e.pageX, e.pageY);
+    }
+
+    document.addEventListener('mousemove', onMove);
+
+    document.addEventListener('mouseup', () => {
+      document.removeEventListener('mousemove', onMove);
+    }, { once: true });
+  });
+
+  // タッチ
+  note.addEventListener('touchstart', e => {
+    const t = e.touches[0];
+    startMove(t.pageX, t.pageY);
+  });
+
+  note.addEventListener('touchmove', e => {
+    const t = e.touches[0];
+    moveAt(t.pageX, t.pageY);
+  });
+
+});
+</script>
+
+</body>
+</html>
